@@ -349,7 +349,36 @@ Sebelum itu kita akan belajar mengenai state. State disini adalah sama dengan pr
 
 Dalam reactJS ada 2 komponen Stateful dan Stateless. **Stateful components** adalah komponen yang menggunakan state. Sedangkan **Stateless Component** adalah komponen yang tidak menggunakan state.
 
+Silahkan edit file **App.js** menjadi seperti dibawah ini
 
+```javascript
+import logo from './logo.svg';
+import './App.css';
+//import useState
+import React, {useState} from  'react';
+
+function App() {
+  // membuat variable state
+  const [Count,setCount] = useState(0);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Nama Saya Rudy Eko Prasetya</h1>
+        <p>Anda Klik Sebanyak {Count} kali</p>
+            <button onClick={() => setCount(Count + 1)}> Click me </button>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Coba Jalankan Aplikasi Anda dan amatilah hasilnya.
+
+Kita mendeklarasikan sebuah state bernama count, dan memberinya nilai 0. React akan mengingat nilai saat ini di setiap render ulang, dan memberikan nilai terbaru ke fungsi kita. Jika kita ingin melakukan pembaruan nilai Count, kita dapat memanggil `setCount`.
 
 
 ## Referensi

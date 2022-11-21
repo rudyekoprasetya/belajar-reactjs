@@ -1,9 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
-// import komponen salam
-import Salam from './components/Salam'
+//import useState
+import React, {useState} from  'react';
 
 function App() {
+  // membuat variable state
   const [Count,setCount] = useState(0);
 
   return (
@@ -11,11 +12,8 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h1>Nama Saya Rudy Eko Prasetya</h1>
-        <p>
-         Selamat Belajar React JS
-        </p>
-        {/* memanggil komponen salam  */}
-        <Salam name="Budi" umur="28"/>
+        <p>Anda Klik Sebanyak {Count} kali</p>
+            <button onClick={() => setCount(Count + 1)}> Click me </button>
       </header>
     </div>
   );
