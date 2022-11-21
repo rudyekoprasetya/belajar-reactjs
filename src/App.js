@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+// import komponen salam
+import Salam from './components/Salam'
 
 function App() {
   return (
@@ -10,6 +12,8 @@ function App() {
         <p>
          Selamat Belajar React JS
         </p>
+        {/* memanggil komponen salam  */}
+        <Salam name="Budi" umur="28"/>
       </header>
     </div>
   );

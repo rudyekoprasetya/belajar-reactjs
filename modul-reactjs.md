@@ -16,16 +16,17 @@ Modul ini menggunakan lisensi [Creative Common](https://creativecommons.org/lice
 
 1. [Pengantar](#pengantar)
 2. [Persiapan dan Installasi](#persiapan-dan-installasi)
-3. Struktur Folder
-4. Props dan Component
-5. Routing 
-6. Layouting dengan CSS
-7. Aplikasi CRUD Tampil Data
-8. Aplikasi CRUD Tambah Data
-9. Aplikasi CRUD Edit Data
-10. Aplikasi CRUD Hapus Data
-11. Membuat Auth
-12. Tentang Penyusun
+3. [Struktur Folder](#struktur-folder)
+4. [Components dan Props](#components-dan-props)
+5. Event Handling
+6. Routing 
+7. Layouting dengan CSS
+8. Aplikasi CRUD Tampil Data
+9. Aplikasi CRUD Tambah Data
+10. Aplikasi CRUD Edit Data
+11. Aplikasi CRUD Hapus Data
+12. Membuat Auth
+13. Tentang Penyusun
 
 ## Pengantar
 ---
@@ -159,6 +160,194 @@ Buka browser anda, maka secara otomatis tampilan akan berubah menjadi
 ![hasil1](https://i.ibb.co/SnqHGfQ/Selection-003.jpg)
 
 
+## Components dan Props
+---
+
+Dalam pembuatan aplikasi web, membagi web menjadi beberapa bagian akan mempermudah kinerja tim, Khususnya saat membangun suatu aplikasi yang cukup kompleks.
+
+**Components** adalah adalah bagian-bagian yang menyusun aplikasi ReactJS. Reactjs bekerja dengan Virtual DOM. Kita harus membuat komponen untuk memberitahu React tentang apa saja yang harus ditampilkan (render) ke Real DOM (HTML).
+
+Silahkan buat folder components didalam folder src sehingga seperti dibawah ini
+
+```console
+- src
+  | - components
+    | - Salam.js
+```
+
+Berikut adalah code untuk **Salam.js**
+
+```javascript
+function Salam() {
+    return (
+      <div className="Salam">
+        <p>Halo Nama Ini adalah Komponen SALAM</p>
+      </div>
+    );
+  }
+  
+export default Salam;
+```
+
+Bentuk diatas adalah bentuk functional component yang saat ini populer digunakan oleh programmer reactjs.
+
+Untuk memasang komponen tersebut silahkan buka dan edit file **App.js**
+
+```javascript
+import logo from './logo.svg';
+import './App.css';
+// import komponen salam
+import Salam from './components/Salam'
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Nama Saya Rudy Eko Prasetya</h1>
+        <p>
+         Selamat Belajar React JS
+        </p>
+        {/* memanggil komponen salam  */}
+        <Salam />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Jalankan server development react dengan perintah `npm start` dan amatilah hasilnya.
+
+Komponen disini bersifat *re-usable* artinya kita bisa menggunakan berulang-ulang tanpa menuliskan kode kembali. 
+
+Contoh kita ubah File App.js menjadi dibawah ini
+
+```javascript
+import logo from './logo.svg';
+import './App.css';
+// import komponen salam
+import Salam from './components/Salam'
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Nama Saya Rudy Eko Prasetya</h1>
+        <p>
+         Selamat Belajar React JS
+        </p>
+        {/* memanggil komponen salam  */}
+        <Salam />
+        <Salam />
+        <Salam />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+**Props** adalah objek khusus yang menyimpan data untuk komponen.  Ini digunakan untuk menyimpan data yang diterima dari luar komponen
+
+Contoh Silahkan Edit File Salam.js yang sudah dibuat sebelumya.
+
+```javascript
+function Salam(props) {
+
+    return (
+      <div className="Salam">
+        <p>Halo {props.name} Salam Kenal</p>
+      </div>
+    );
+  }
+  
+  export default Salam;
+```
+
+Selanjutnya edit file App.js menjadi seperti dibawah ini
+
+```javascript
+import logo from './logo.svg';
+import './App.css';
+// import komponen salam
+import Salam from './components/Salam'
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Nama Saya Rudy Eko Prasetya</h1>
+        <p>
+         Selamat Belajar React JS
+        </p>
+        {/* memanggil komponen salam  */}
+        <Salam name="Budi" />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Jalankan Server Development dan amatilah hasilnya.
+
+untuk menampilkan data props kita gunakan coding `{props.nama_props}`. Semisal tambahkan properti umur menjadi seperti dibawah ini
+
+```javascript
+function Salam(props) {
+
+    return (
+      <div className="Salam">
+        <p>Halo {props.name} Salam Kenal</p>
+        <p>Umur Saya {props.umur} tahun</p>
+      </div>
+    );
+  }
+  
+export default Salam;
+```
+
+Kita edit file App.js nya pula
+
+```javascript
+import logo from './logo.svg';
+import './App.css';
+// import komponen salam
+import Salam from './components/Salam'
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <h1>Nama Saya Rudy Eko Prasetya</h1>
+        <p>
+         Selamat Belajar React JS
+        </p>
+        {/* memanggil komponen salam  */}
+        <Salam name="Budi" umur="28"/>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Kita bisa mengirimkan parameter pada setiap komponen yang dipanggil.
+
+## Event Handling
+---
+
+Sebelum itu kita akan belajar mengenai state. State disini adalah sama dengan props, yaitu suatu data yang diolah didalam komponen itu sendiri, sedangkan props berasal dari luar komponen.
+
+Dalam reactJS ada 2 komponen Stateful dan Stateless. **Stateful components** adalah komponen yang menggunakan state. Sedangkan **Stateless Component** adalah komponen yang tidak menggunakan state.
 
 
 
@@ -167,3 +356,4 @@ Buka browser anda, maka secara otomatis tampilan akan berubah menjadi
 ---
 
 - [https://www.niagahoster.co.id/blog/react-js-adalah/](https://www.niagahoster.co.id/blog/react-js-adalah/)
+-[https://www.petanikode.com/reactjs-komponen/](https://www.petanikode.com/reactjs-komponen/)
