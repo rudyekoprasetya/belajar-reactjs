@@ -18,7 +18,7 @@ Modul ini menggunakan lisensi [Creative Common](https://creativecommons.org/lice
 2. [Persiapan dan Installasi](#persiapan-dan-installasi)
 3. [Struktur Folder](#struktur-folder)
 4. [Components dan Props](#components-dan-props)
-5. Event Handling
+5. [Event Handling](#event-handling)
 6. Routing 
 7. Layouting dengan CSS
 8. Aplikasi CRUD Tampil Data
@@ -379,6 +379,114 @@ export default App;
 Coba Jalankan Aplikasi Anda dan amatilah hasilnya.
 
 Kita mendeklarasikan sebuah state bernama count, dan memberinya nilai 0. React akan mengingat nilai saat ini di setiap render ulang, dan memberikan nilai terbaru ke fungsi kita. Jika kita ingin melakukan pembaruan nilai Count, kita dapat memanggil `setCount`.
+
+Untuk lebih jelas lagi silahkan Anda buat file didalam folder **src/component** sebagai berikut
+
+dibawah ini adalah file **Hitung.js**
+
+```javascript
+import React, {useState} from "react";
+import './Hitung.css';
+
+function Hitung() {
+    //membuat state
+    const [angka1,setangka1] = useState(0);
+    const [angka2,setangka2] = useState(0);
+    const [hasil,sethasil] = useState(0);
+
+    //fungsi penjumlahan
+    const Kali = () => {
+      sethasil(angka1*angka2);
+    }
+
+    return (
+      <div className="Hitung">
+        <p className="judul">Program Hitung</p>
+        <input type="number" name="angka1" placeholder="Masukan angka" onChange={(e)=> {setangka1(e.target.value)}} />
+        <br />
+        <input type="number" name="angka2" placeholder="Masukan angka" onChange={(e)=> {setangka2(e.target.value)}} />
+        <br />
+        <button type="button" onClick={Kali}>HITUNG</button>
+        <br />
+        <h2>Hasil {hasil}</h2>
+      </div>
+    );
+  }
+  
+export default Hitung;
+```
+
+Selanjutnya kita buat untuk CSS nya, buatlah file **Hitung.css** dengan kode dibawah ini
+
+```css
+.Hitung {
+    text-align: center;
+    background-color:gray;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color:aliceblue;
+}
+
+.judul {
+    font-weight: bold;
+    font-size: larger;
+}
+
+input {
+    margin: 1em;
+    padding: 2px;
+    width: 200px;
+    height: 2em;
+    border-radius: 10px;
+    border-color:orange;
+}
+
+button {
+    width: 150px;
+    height: 3em;
+    background-color:orange;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+}
+```
+
+Selanjutnya kita edit file index.js untuk mengarahkan component utama dari App.js ke Hitung.js, berikut adalah kodenya
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+// import App from './App'; di berikan komentar
+//import component hitung
+import Hitung from './components/Hitung';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    {/* <App /> di komentari dan ditambahkan component Hitung*/}
+    <Hitung />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+Jalankan server developmentnya dengan perintah `npm start` maka akan muncul tampilan seperti dibawah ini
+
+![kalkulator](https://i.ibb.co/y4gJ19x/Selection-009.png)
+
+
+## Routing
+---
+
 
 
 ## Referensi
