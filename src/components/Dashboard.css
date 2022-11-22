@@ -1,0 +1,45 @@
+.Dashboard {
+    min-height: 100vh;
+    background-color: lightgray;
+}
+
+.header {
+    padding: 20px;
+    background-color: aliceblue;
+}
+
+.judul {
+    font-size: 40px;
+
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.nav {
+    margin-top: auto;
+    padding: 10px;
+    background-color: lightcoral;
+}
+
+.nav li {
+    display: inline-block;
+    margin-right: 20px;
+    padding:5px;
+    margin-top: 10px;
+}
+
+.nav li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+.Content {
+    background-color: antiquewhite;
+    height: 50vh;
+    width: auto;
+    padding: 1em;
+    margin-left: 2em;
+    margin-right: 2em;
+    color: black;
+}
