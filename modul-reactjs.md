@@ -672,6 +672,48 @@ Coba jalankan aplikasi react anda maka akan muncul tampilan seperti dibawah ini
 
 ![dashboard](https://i.ibb.co/J58xhsP/Selection-010.png)
 
+Coba klik ke laman lain dan amati hasilnya
+
+
+## Integrasi dengan CSS Framework
+---
+
+Kita akan belajar cara mengintergrasikan aplikasi ReactJS kita dengan CSS Bootstrap, khususnya kita akan membuat aplikasi *SPA (Single Page Application)*
+
+**Bootstrap** adalah framework CSS yang mengatur dan mengelola tata letak website. Kalau HTML bertugas untuk menangani konten dan struktur halaman web, CSS menangani tata letaknya. Jadi, kedua struktur ini perlu bekerja sama untuk melakukan tindakan tertentu.
+
+Dengan fungsionalitasnya, Bootstrap membantu para developer menciptakan tampilan yang seragam di sebanyak mungkin halaman sesuai kebutuhan. Hasilnya, mereka pun tidak perlu menghabiskan waktu berjam-jam untuk mengedit secara manual.
+
+Versi yang kita gunakan adalah bootstrap versi 5.2 Dokumentasi bisa merujuk ke [https://getbootstrap.com/docs/5.2/getting-started/introduction/](https://getbootstrap.com/docs/5.2/getting-started/introduction/).
+
+Semisal kita punya layout UI untuk aplikasi web kita sebagai berikut
+
+```console
++----------------------------------------------+
++                                              +
++                   Header                     +
++                                              +
++----------------------------------------------+
++                 Navbar/Menu                  +
++----------------------------------------------+
++                                              +
++                                              +
++                                              +
++                   Content                    +
++                                              +
++                                              +
++                                              +
++----------------------------------------------+
+```
+
+Maka langkah pertama adalah kita masukan CDN CSS Bootstrap terlebih dahulu dalam project kita. Bukalah file **index.html** didalam folder **public** dan sesuaikan menjadi berikut ini.
+
+
+
+
+
+
+
 ## Referensi
 ---
 
