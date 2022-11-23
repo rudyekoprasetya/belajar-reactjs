@@ -1,10 +1,22 @@
 function Content() {
 
     return (
-      <div className="container">
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint, debitis. Quod, praesentium laudantium. Animi labore porro inventore nesciunt! Aliquam nesciunt mollitia sequi explicabo deleniti? Eius nobis nihil hic sed tenetur!
-        </p>
+      <div className="Content">
+        <h1>Content Page</h1>
+        <div class="row text-start">
+            <div class="col">
+                Lorem ipsum, dolor sit amet consectetur, adipisicing elit.
+                Nihil, culpa? Beatae distinctio numquam quibusdam corrupti
+                quos, facere libero voluptate, hic eum illum sequi
+                consectetur, quod reprehenderit odit optio temporibus et!
+            </div>
+            <div class="col">
+                Lorem ipsum, dolor sit amet consectetur, adipisicing elit.
+                Nihil, culpa? Beatae distinctio numquam quibusdam corrupti
+                quos, facere libero voluptate, hic eum illum sequi
+                consectetur, quod reprehenderit odit optio temporibus et!
+            </div>
+        </div>
       </div>
     );
   }

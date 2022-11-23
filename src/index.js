@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 // import App from './App';
 // import Hitung from './components/Hitung';
-import Dashboard from './components/Dashboard';
+// import Dashboard from './components/Dashboard';
+import WebMain from './components/layout/WebMain'
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -11,7 +12,8 @@ root.render(
   <React.StrictMode>
     {/* <App /> */}
     {/* <Hitung /> */}
-    <Dashboard />
+    {/* <Dashboard /> */}
+    <WebMain />
   </React.StrictMode>
 );
 
