@@ -690,11 +690,10 @@ Semisal kita punya layout UI untuk aplikasi web kita sebagai berikut
 
 ```console
 +----------------------------------------------+
++                 Navbar/Menu                  +
++----------------------------------------------+
 +                                              +
 +                   Header                     +
-+                                              +
-+----------------------------------------------+
-+                 Navbar/Menu                  +
 +----------------------------------------------+
 +                                              +
 +                                              +
@@ -706,12 +705,170 @@ Semisal kita punya layout UI untuk aplikasi web kita sebagai berikut
 +----------------------------------------------+
 ```
 
-Maka langkah pertama adalah kita masukan CDN CSS Bootstrap terlebih dahulu dalam project kita. Bukalah file **index.html** didalam folder **public** dan sesuaikan menjadi berikut ini.
+Maka langkah pertama adalah kita install terlebih dahulu plugin untuk bootstrap dengan perintah
 
+```console
+npm i bootstrap
+```
 
+Tunggu sampai proses selesai
 
+Kemudian kita buat komponen-komponen seperti layout diatas, semuanya akan saya masukan dalam folder **src/component/layout**, sehingga strukturnya seperti dibawah ini
 
+```console
+src
+|- components
+    |- layout
+        |- WebMain.js
+        |- Navbar.js
+        |- Header.js
+        |- Content.js
+```
 
+Berikut adalah coding untuk file **Content.js**
+
+```javascript
+function Content() {
+
+  return (
+    <div className="Content">
+      <h1 className="mt-5">Content Page</h1>
+      <div className="row text-start mt-4">
+          <div className="col">
+              Lorem ipsum, dolor sit amet consectetur, adipisicing elit.
+              Nihil, culpa? Beatae distinctio numquam quibusdam corrupti
+              quos, facere libero voluptate, hic eum illum sequi
+              consectetur, quod reprehenderit odit optio temporibus et!
+          </div>
+          <div className="col">
+              Lorem ipsum, dolor sit amet consectetur, adipisicing elit.
+              Nihil, culpa? Beatae distinctio numquam quibusdam corrupti
+              quos, facere libero voluptate, hic eum illum sequi
+              consectetur, quod reprehenderit odit optio temporibus et!
+          </div>
+      </div>
+    </div>
+  );
+}
+  
+export default Content;
+```
+
+Selanjutnya kita buat komponen untuk **Header.js**
+
+```javascript
+function Header() {
+	return (
+		<div className="Header">
+			<div className=" p-5 bg-dark text-white">
+			<h1>Jumbotron Example</h1>
+			<p>Lorem ipsum...</p>
+			</div>
+		</div>
+	)
+}
+
+export default Header;
+```
+
+Kemudian kita buat **NavBar.js**
+
+```javascript
+//import untuk React Link
+import { Link } from "react-router-dom";
+function Navbar() {
+
+    return (
+        <div className="Navbar">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-success">
+                <div className="container-fluid">
+                    <Link className="navbar-brand" to="#">React JS</Link>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div className="navbar-nav">
+                        <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+                        <Link className="nav-link" to="/">Features</Link>
+                        <Link className="nav-link" to="/">Pricing</Link>
+                        <Link className="nav-link" to="/about">About</Link>
+                    </div>
+                    </div>
+                </div>
+                </nav>
+        </div>
+    );
+  }
+  
+export default Navbar;
+```
+
+Kemudian kita buat file WebMain.js sebagai laman utamanya
+
+```javascript
+import React from "react";
+//import routing library
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+} from "react-router-dom";
+
+//import komponen penyusun lainnya
+import Navbar from "./NavBar";
+import Content from "./Content";
+import Header from "./Header";
+
+function WebMain() {
+
+    return (
+      <div className="WebMain">
+        <Router>
+          <div className="container">
+          <Navbar />
+          <Header />
+          <Routes>
+              <Route path="/" element={<Content />}/>
+              <Route path="/about" element={<About />}/>
+          </Routes>
+          </div>
+        </Router>
+      </div>
+    );
+  }
+  
+export default WebMain;
+```
+
+Selanjutnya jangan lupa kita import bootstrap pada file **index.js** seperti dibawah ini
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+//import bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.js';
+//import Komponen utama
+import WebMain from './components/layout/WebMain'
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <WebMain />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+Coba jalankan aplikasi react anda dengan `npm start`,maka akan muncul tampilan seperti ini
+
+![bootstrap](https://i.ibb.co/JzZ4DZY/Selection-011.png)
 
 
 ## Referensi
@@ -720,3 +877,4 @@ Maka langkah pertama adalah kita masukan CDN CSS Bootstrap terlebih dahulu dalam
 - [https://www.niagahoster.co.id/blog/react-js-adalah/](https://www.niagahoster.co.id/blog/react-js-adalah/)
 -[https://www.petanikode.com/reactjs-komponen/](https://www.petanikode.com/reactjs-komponen/)
 - [https://afrijaldzuhri.com/belajar-routing-dalam-react/](https://afrijaldzuhri.com/belajar-routing-dalam-react/)
+- [https://blog.logrocket.com/using-bootstrap-with-react-tutorial-with-examples/](https://blog.logrocket.com/using-bootstrap-with-react-tutorial-with-examples/)
