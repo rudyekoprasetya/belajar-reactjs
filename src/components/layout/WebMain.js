@@ -15,11 +15,13 @@ function WebMain() {
 
     return (
       <div className="WebMain">
-        <Header />
-        <Navbar />
-        <Routes>
-            <Route path="/" element={<Content />}/>
-        </Routes>
+        <Router>
+          <Header />
+          <Navbar />
+          <Routes>
+              <Route path="/" element={<Content />}/>
+          </Routes>
+        </Router>
       </div>
     );
   }
