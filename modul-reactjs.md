@@ -20,7 +20,7 @@ Modul ini menggunakan lisensi [Creative Common](https://creativecommons.org/lice
 4. [Components dan Props](#components-dan-props)
 5. [Event Handling](#event-handling)
 6. [Routing](#routing) 
-7. Integrasi dengan CSS Framework
+7. [Integrasi dengan CSS Framework](#integrasi-dengan-css-framework)
 8. Aplikasi CRUD Tampil Data
 9. Aplikasi CRUD Tambah Data
 10. Aplikasi CRUD Edit Data
@@ -869,6 +869,10 @@ reportWebVitals();
 Coba jalankan aplikasi react anda dengan `npm start`,maka akan muncul tampilan seperti ini
 
 ![bootstrap](https://i.ibb.co/JzZ4DZY/Selection-011.png)
+
+## Aplikasi CRUD Tampil Data
+---
+
 
 
 ## Referensi
