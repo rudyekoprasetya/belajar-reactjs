@@ -21,12 +21,13 @@ Modul ini menggunakan lisensi [Creative Common](https://creativecommons.org/lice
 5. [Event Handling](#event-handling)
 6. [Routing](#routing) 
 7. [Integrasi dengan CSS Framework](#integrasi-dengan-css-framework)
-8. Aplikasi CRUD Tampil Data
-9. Aplikasi CRUD Tambah Data
-10. Aplikasi CRUD Edit Data
-11. Aplikasi CRUD Hapus Data
-12. Membuat Auth
-13. Tentang Penyusun
+8. [Membuat Rest Client untuk Public API](#rest-client-untuk-public-api)
+9. Aplikasi CRUD Tampil Data
+10. Aplikasi CRUD Tambah Data
+11. Aplikasi CRUD Edit Data
+12. Aplikasi CRUD Hapus Data
+13. Membuat Auth
+14. Tentang Penyusun
 
 ## Pengantar
 ---
@@ -870,8 +871,330 @@ Coba jalankan aplikasi react anda dengan `npm start`,maka akan muncul tampilan s
 
 ![bootstrap](https://i.ibb.co/JzZ4DZY/Selection-011.png)
 
-## Aplikasi CRUD Tampil Data
+
+## Rest Client untuk Public API
 ---
+
+Kali ini kita akan belajar membuat suatu aplikasi yang memanfaatkan Rest API. Dimana kita akan membuat aplikasi baca berita yang mengambil data dari sebuah public API dari [https://newsapi.org/](https://newsapi.org/). Untuk penjelasan mengenai *Apasih sebenarnya API itu? Apa kegunaannya? Penting gak kita belajar mengenai API?* Silahkan mengunjungi [Membuat REST API dengan PHP](https://rudyekoprasetya.wordpress.com/2020/03/02/rest-api-dengan-php/).
+
+Pertama-tama Silahkan anda bikin akun di [https://newsapi.org/](https://newsapi.org/) kemudian dapatkan API Key untuk mengakses beberapa berita yang akan kita sematkan di aplikasi web kita.
+
+![public api](https://rudyekoprasetya.files.wordpress.com/2021/07/selection_006.jpg?w=722&h=379)
+
+Jika anda sudah login akan mendapatkan API key, simpan di notepad yang nantinya akan kita gunakan 
+
+![public-api2](https://rudyekoprasetya.files.wordpress.com/2021/07/selection_007-1.jpg?w=672&h=311)
+
+Buatlah project react baru dengan perintah
+
+```console
+npx create-react-app web-berita
+```
+
+Kemudian kita masuk ke folder kerja kita dengan perintah
+
+```console
+cd web-berita
+```
+
+selanjutnya kita install react-router dan bootstrap
+
+```console
+npm i react-router-dom
+
+npm i bootstrap
+```
+
+Kita import bootstrap di file **index.js**
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+// import './index.css';
+//import bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.js';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+Selanjutnya kita install library Axios. **Axios** adalah sebuah library open source  untuk melakukan request HTTP karena memiliki banyak kelebihan namun dengan penggunaan yang tidak lebih sulit dibanding yang lain. Sama halnya dengan Ajax JQuery dimana proses request akan dijalankan secara asinkron, sehingga nanti membuat laman web yang kita buat tanpa reload.
+
+```console
+npm i axios
+```
+
+Kita susun terlebih dahulu struktur file untuk komponen aplikasi kita seperti dibawah ini
+
+```console
+- src
+  |- component
+      |- About.js
+      |- Home.js
+      |- NavBar.js
+      |- Sport.js
+      |- Technology.js
+```
+
+Berikut adalah file **About.js**
+
+```javascript
+function About() {
+  return (
+    <div className="About mt-5">
+      <div className="row">
+        <div className="col">
+          <h2>About</h2>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente dolorem quas, consequatur minima voluptatum harum unde molestiae similique doloribus consectetur praesentium molestias fuga, incidunt quam tenetur modi quidem in alias. Lorem ipsum dolor sit amet consectetur adipisicing elit. Non libero at sit fugit fugiat beatae animi laboriosam repellat eum maxime quis delectus, vitae in reprehenderit unde, et id, dolor a.</p>
+              <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Id, ratione voluptas fugiat, consequatur non at porro labore pariatur totam quasi dolorum earum aut impedit eligendi omnis laboriosam est inventore ut.</p>
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eum totam deserunt inventore reiciendis minus quidem, ducimus adipisci assumenda illum fugiat ut sed dolor dolores, sequi odit! Fugit commodi quae ab! Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint consequuntur incidunt quam tempora, neque officia fugiat nesciunt modi illo repudiandae provident ducimus impedit aperiam nisi dicta dignissimos esse, sed unde?</p>
+        </div>
+      </div>      
+      </div>
+
+  );
+}
+
+export default About;
+```
+
+Dibawah ini adalah file **Home.js**
+
+```javascript
+//import useState dan useEffect dan axios
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
+function Home() {
+  const [Berita,setBerita] = useState([]);
+
+  //agar fungsi langsung berjalan saat komponen diakses
+  useEffect(() => {
+    axios
+        .get('https://newsapi.org/v2/top-headlines?country=id&apiKey=_APIKEY_ANDA_')
+        .then(response=>{
+          console.log(response.data.articles);
+          setBerita(response.data.articles);
+      });
+  },[]);
+
+  return (
+    <div className="Home mt-5">
+      <div className="row">
+        <div className="col">
+          <h2>Berita Utama</h2>
+        </div>
+      </div>
+          <div className="row">
+            {Berita.map((item) => ( 
+              <div className="col m-3">
+                <div className="card">
+                  <img src={item.urlToImage} className="card-img-top" alt="" style={{width: '20rem'}} />        
+                  <div className="card-body">
+                    <h5 className="card-title">{item.title}</h5>
+                    <p className="card-text">{item.description}</p>
+                  </div>
+                </div>
+            </div>
+            ))}
+          
+        </div>
+      </div>
+
+  );
+}
+
+export default Home;
+```
+Coding `useEffect([])` digunakan untuk melakukan autoload pada fungsi yang dijalankan saat komponen dibuka. Diatas fungsi yang dijalankan adalah `axios.get()` dimana kegunaanya adalah untuk memanggil API dari newsapi.org dengan metode GET. Jangan lupa memasukan APIKEY yang sudah didapatkan tadi pada endpoint atau url diatas.
+
+Selanjutnya buatlah komponen **NavBar.js** untuk navigasi aplikasi kita
+
+```javascript
+import {Link} from "react-router-dom"
+
+function NavBar () {
+  return (
+     <div className="Navbar">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
+                <div className="container-fluid">
+                    <Link className="navbar-brand" to="#">Berita Dua</Link>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div className="navbar-nav ms-auto">
+                        <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+                        <Link className="nav-link" to="/sport">Sport</Link>
+                        <Link className="nav-link" to="/technology">Technology</Link>
+                        <Link className="nav-link" to="/about">About</Link>
+                    </div>
+                    </div>
+                </div>
+                </nav>
+        </div>
+  );
+}
+
+export default NavBar;
+```
+
+dibawah ini adalah komponen untuk memuat berita olahraga
+
+```javascript
+//import useState dan useEffect dan axios
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
+function Sport() {
+  const [Berita,setBerita] = useState([]);
+
+  useEffect(() => {
+    axios
+        .get('https://newsapi.org/v2/top-headlines?country=id&category=sport&apiKey=_APIKEY_ANDA_')
+        .then(response=>{
+          console.log(response.data.articles);
+          setBerita(response.data.articles);
+      });
+  },[]);
+
+  return (
+    <div className="Technology mt-5">
+      <div className="row">
+        <div className="col">
+          <h2>Berita Olahraga</h2>
+        </div>
+      </div>
+          <div className="row">
+            {Berita.map((item) => ( 
+              <div className="col m-3">
+                <div className="card">
+                  <img src={item.urlToImage} className="card-img-top" alt="" style={{width: '20rem'}} />        
+                  <div className="card-body">
+                    <h5 className="card-title">{item.title}</h5>
+                    <p className="card-text">{item.description}</p>
+                  </div>
+                </div>
+            </div>
+            ))}
+          
+        </div>
+      </div>
+
+  );
+}
+
+export default Sport;
+```
+
+komponen terakhir adalah untuk laman berita teknologi **Technology.js**
+
+```javascript
+//import useState dan useEffect dan axios
+import { useEffect, useState } from "react";
+import axios from 'axios';
+
+function Technology() {
+  const [Berita,setBerita] = useState([]);
+
+  useEffect(() => {
+    axios
+        .get('https://newsapi.org/v2/top-headlines?country=id&category=technology&apiKey=_APIKEY_ANDA_')
+        .then(response=>{
+          console.log(response.data.articles);
+          setBerita(response.data.articles);
+      });
+  },[]);
+
+  return (
+    <div className="Technology mt-5">
+      <div className="row">
+        <div className="col">
+          <h2>Berita Teknologi</h2>
+        </div>
+      </div>
+          <div className="row">
+            {Berita.map((item) => ( 
+              <div className="col m-3">
+                <div className="card">
+                  <img src={item.urlToImage} className="card-img-top" alt="" style={{width: '20rem'}} />        
+                  <div className="card-body">
+                    <h5 className="card-title">{item.title}</h5>
+                    <p className="card-text">{item.description}</p>
+                  </div>
+                </div>
+            </div>
+            ))}
+          
+        </div>
+      </div>
+
+  );
+}
+
+export default Technology;
+```
+
+Selanjutnya sesuaikan file **App.js**
+
+```javascript
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+} from "react-router-dom";
+
+//import semua komponen
+import NavBar from './component/NavBar';
+import Home from './component/Home';
+import About from './component/About';
+import Technology from './component/Technology';
+import Sport from './component/Sport';
+
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <NavBar />
+        <div className="container">
+          <Routes>
+              <Route path="/" element={<Home />}/>
+              <Route path="/technology" element={<Technology />}/>
+              <Route path="/sport" element={<Sport />}/>
+              <Route path="/about" element={<About />}/>
+          </Routes>
+        </div>
+      </Router>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Jalankan server development dengan perintah 
+
+```console
+npm start
+```
+
+Maka akan muncul tampilah seperti ini
+
+![news app](https://rudyekoprasetya.files.wordpress.com/2021/07/selection_009.jpg?w=725&h=437)
+
+Coba cek laman lain dan amatilah hasilnya.
 
 
 
@@ -879,6 +1202,7 @@ Coba jalankan aplikasi react anda dengan `npm start`,maka akan muncul tampilan s
 ---
 
 - [https://www.niagahoster.co.id/blog/react-js-adalah/](https://www.niagahoster.co.id/blog/react-js-adalah/)
--[https://www.petanikode.com/reactjs-komponen/](https://www.petanikode.com/reactjs-komponen/)
+- [https://www.petanikode.com/reactjs-komponen/](https://www.petanikode.com/reactjs-komponen/)
 - [https://afrijaldzuhri.com/belajar-routing-dalam-react/](https://afrijaldzuhri.com/belajar-routing-dalam-react/)
 - [https://blog.logrocket.com/using-bootstrap-with-react-tutorial-with-examples/](https://blog.logrocket.com/using-bootstrap-with-react-tutorial-with-examples/)
+- [https://www.digitalocean.com/community/tutorials/react-axios-react-id](https://www.digitalocean.com/community/tutorials/react-axios-react-id)
