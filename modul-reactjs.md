@@ -22,10 +22,10 @@ Modul ini menggunakan lisensi [Creative Common](https://creativecommons.org/lice
 6. [Routing](#routing) 
 7. [Integrasi dengan CSS Framework](#integrasi-dengan-css-framework)
 8. [Membuat Rest Client untuk Public API](#rest-client-untuk-public-api)
-9. Aplikasi CRUD Tampil Data
-10. Aplikasi CRUD Tambah Data
-11. Aplikasi CRUD Edit Data
-12. Aplikasi CRUD Hapus Data
+9. [Aplikasi CRUD Tampil Data](#aplikasi-crud-tampil-data)
+10. [Aplikasi CRUD Tambah Data](#aplikasi-crud-tambah-data)
+11. [Aplikasi CRUD Edit Data](#aplikasi-crud-edit-data)
+12. [Aplikasi CRUD Hapus Data](#aplikasi-crud-hapus-data)
 13. Membuat Auth
 14. Tentang Penyusun
 
@@ -1197,6 +1197,856 @@ Maka akan muncul tampilah seperti ini
 Coba cek laman lain dan amatilah hasilnya.
 
 
+## Aplikasi CRUD Tampil Data
+---
+
+Pada bab ini kita akan belajar membuat aplikasi CRUD (*Create, Read, Update, Delete*) dengan menggunakan Rest API private dengan bahasa PHP, untuk keterangan lebih lanjut mengenai pembuatannya, silahkan merujuk ke [https://rudyekoprasetya.wordpress.com/2020/03/02/rest-api-dengan-php/](https://rudyekoprasetya.wordpress.com/2020/03/02/rest-api-dengan-php/)
+
+Untuk mempersingkat waktu silahkan untuk atau clone pada [https://github.com/rudyekoprasetya/BelajarRestAPIPHP](https://github.com/rudyekoprasetya/BelajarRestAPIPHP). 
+
+Setelah download extract dan rename folder tersebut dengan nama **rest-api** dengan struktur folder didalamnya sebagai berikut
+
+```console
+rest-api
+|- config
+    |- koneksi.php
+|- hapus_data.php
+|- pengurus.sql
+|- tambah_data.php
+|- tampil_data.php
+|- ubah_data.php
+```
+
+Kemudian masukan folder tersebut ke folder XAMPP di **htdocs**. buatlah database pengurus dan  Jangan lupa  Import database **pengurus.sql** ke dalam database mysql anda.  Cobalah akses Rest API tersebut dengan Postman
+
+Jika rest server sudah siap, selanjutnya kita buat project react baru dengan perintah
+
+```console
+npx create-react-app rest-client
+```
+
+Selanjutnya kita install kebutuhan lainnya seperti, react router, bootstrap dan axios
+
+```console
+cd rest-client
+
+npm i react-router-dom
+
+npm i bootstrap
+
+npm i axios
+```
+
+Selanjutnya kita susun struktur component seperti dibawah ini
+
+```console
+|- src
+    |- components
+        |- NavBar.js
+        |- TampilData.js
+    |- App.js
+    |- index.js 
+```
+
+kita load bootstrap di **index.js**
+
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+// import './index.css';
+//import bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.js';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+```
+
+Kita buat dahulu komponen **NavBar.js**
+
+```javascript
+function NavBar () {
+  return (
+     <div className="Navbar">
+            <nav className="navbar navbar-dark bg-primary">
+              <div className="container-fluid">
+                <span className="navbar-brand mb-0 h1">ReactJS Apps</span>
+              </div>
+            </nav>
+         </div>
+  );
+}
+
+export default NavBar;
+```
+
+Selanjutnya adalah **TampilData.js**
+
+```javascript
+import {
+  useEffect, useState
+} from "react";
+
+//import axios
+import axios from 'axios';
+
+function TampilData() {
+  //definisikan base URL rest server
+  const url = 'http://localhost/rest-api/';
+
+  //untuk menampung data
+  const [Pengurus,setPengurus] = useState([]);
+
+  //untuk mengambil data dari rest server
+  const viewData = () => {
+    axios
+      .get(url+'tampil_data.php')
+      .then(response => {
+        setPengurus(response.data.pengurus);
+    });
+  }
+  
+  //agar fungsi langsung berjalan saat komponen di load
+  useEffect(() => {
+    viewData();
+  },[]);
+
+  return (
+    <div className="TampilData">
+      <div className="row">
+        <div className="col">
+          <h2>CRUD Pengurus</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-4">
+          <button className="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
+        </div>
+        
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Alamat</th>
+              <th scope="col">Gender</th>
+              <th scope="col">Gaji</th>
+              <th scope="col">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+          { Pengurus.map((item, index) => (
+            <tr key={index}>
+              <td>{item.id}</td>
+              <td>{item.nama}</td>
+              <td>{item.alamat}</td>
+              <td>{item.gender}</td>
+              <td>{item.gaji}</td>
+              <td>
+                <button className="btn btn-small btn-warning">Edit</button> |
+                <button className="btn btn-small btn-danger">Delete</button>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </div>
+     
+    </div>
+
+  );
+}
+
+export default TampilData;
+```
+pertama kita import axios untuk mengelola rest api, disini saya gunakan variable untuk `base_url` utama pada rest server agar lebih efisien dalam penggunaanya. 
+
+Selanjutnya pada fungsi `viewData()` kita panggil data dengan metode GET pada rest server dan memasukan hasil ke dalam state Pengurus pada code `setPengurus(response.data.pengurus)` . 
+
+
+Agar fungsi viewData langsung ter load saat komponen di buka maka kita gunakan `useEffect([])`. Anda tentunya pernah melakukan pengambilan data, berlangganan data (subscription), atau secara manual mengubah DOM dari komponen React. Operasi-operasi seperti ini  disebut “efek samping (side effects)” (atau singkatnya “efek (effects)”) karena dapat mempengaruhi komponen lain dan tidak dapat dilakukan pada saat proses render.
+
+Untuk me render hasil ke HTML digunakan fungsi map `Pengurus.map() => {}` untuk menampilkan hasilnya dalam HTML.
+
+Jangan lupa kita sesuaikan **App.js** untuk routing component yang sudah dibuat
+
+```javascript
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route
+} from "react-router-dom";
+
+import NavBar from './components/NavBar';
+import TampilData from './components/TampilData';
+
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <NavBar />
+        <div className="container mt-3">
+          <Routes>
+            <Route path="/" element={<TampilData />}/>
+          </Routes>
+        </div>
+      </Router>
+    </div>
+  );
+}
+
+export default App;
+```
+
+untuk uji coba jalankan XAMPP dan server development aplikasi react anda, maka akan muncul tampilan dibawah ini
+
+![tampil data](https://i.ibb.co/bWGJTJy/Selection-004.jpg)
+
+## Aplikasi CRUD Tambah Data.
+---
+
+Selanjutnya kita akan membuat aplikasi tambah data, silahkan edit dan sesuaikan file **TampilData.js** untuk menambahkan modal form tambah data
+
+```javascript
+import {
+  useEffect, useState
+} from "react";
+
+import axios from 'axios';
+
+function TampilData() {
+  const url = 'http://localhost/rest-api/';
+
+  const [Pengurus,setPengurus] = useState([]);
+
+  //state untuk masing-masing data
+  const [Id,setId] = useState("");
+  const [Nama,setNama] = useState("");
+  const [Alamat,setAlamat] = useState("");
+  const [Gender,setGender] = useState("L");
+  const [Gaji,setGaji] = useState("");
+
+  //untuk mengkosongkan form
+  const clearData = () => {
+    setId("");
+    setNama("");
+    setAlamat("");
+    setGender("L");
+    setGaji("");
+  }
+
+  const viewData = () => {
+    axios
+      .get(url+'tampil_data.php')
+      .then(response => {
+        setPengurus(response.data.pengurus);
+    });
+  }
+
+  //fungsi tambah data
+  const addData = () => {
+    const formData = new URLSearchParams();
+    formData.append('id',Id);
+    formData.append('nama',Nama);
+    formData.append('alamat',Alamat);
+    formData.append('gender',Gender);
+    formData.append('gaji',Gaji);
+    axios
+      .post(url+'tambah_data.php', formData)
+      .then(response => {
+        alert(response.data.pesan);
+        //load lagi viewData untuk melihat perubahan
+        viewData();
+        //kosongkan form
+        clearData();
+    });
+
+  }
+
+  useEffect(() => {
+    viewData();
+  },[]);
+
+  return (
+    <div className="TampilData">
+      <div className="row">
+        <div className="col">
+          <h2>CRUD Pengurus</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-4">
+          <button className="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
+        </div>
+        
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Alamat</th>
+              <th scope="col">Gender</th>
+              <th scope="col">Gaji</th>
+              <th scope="col">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+          { Pengurus.map((item, index) => (
+            <tr key={index}>
+              <td>{item.id}</td>
+              <td>{item.nama}</td>
+              <td>{item.alamat}</td>
+              <td>{item.gender}</td>
+              <td>{item.gaji}</td>
+              <td>
+                <button className="btn btn-small btn-warning">Edit</button> |
+                <button className="btn btn-small btn-danger">Delete</button>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/*modal tambah data*/}
+       <div className="modal fade" id="tambahModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div className="modal-dialog">
+           <div className="modal-content">
+             <div className="modal-header">
+               <h5 className="modal-title" id="exampleModalLabel">Form Data</h5>
+               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div className="modal-body">
+               <form>
+                 <div className="mb-3">
+                   <label className="form-label">ID</label>
+                   <input type="text" className="form-control" onChange={(e) => setId(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Nama</label>
+                   <input type="text" className="form-control" onChange={(e) => setNama(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Alamat</label>
+                   <textarea className="form-control" rows="3" onChange={(e) => setAlamat(e.target.value)}></textarea>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gender</label>
+                   <select className="form-control" onChange={(e) => setGender(e.target.value)}>
+                     <option value="L">Laki-laki</option>
+                     <option value="P">Perempuan</option>
+                   </select>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gaji</label>
+                   <input type="text" className="form-control" onChange={(e) => setGaji(e.target.value)} />
+                 </div>
+               </form>
+             </div>
+             <div className="modal-footer">
+               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={clearData}>Close</button>          
+               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={addData}>Save</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       {/*modal tambah data*/}
+
+    </div>
+
+  );
+}
+
+export default TampilData;
+```
+
+Untuk fungsi `addData()` digunakan untuk menambah data dalam rest api dengan metode POST. fungsi ini dipanggil pada tombol Save di code `<button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={addData}>Save</button>` pada form modal tambah data. 
+
+Jika proses tambah data berhasil makan akan muncul pesan atau `alert()` dari rest server, kemudian kita panggil fungsi `viewData()` lagi untuk reload table serta fungsi `clearData()` untuk mengosongkan form.
+
+Coba cek di browser maka hasilnya adalah sebagai berikut
+
+![tambah data](https://i.ibb.co/FhGCdy2/Selection-005.jpg)
+
+Coba masukan satu data dan amatilah hasilnya.
+
+
+## Aplikasi CRUD Edit Data
+---
+
+Setelah itu kita akan membuat operasi edit atau update data. Silahkan sesuai file **TampilData.js** 
+
+```javascript
+import {
+  useEffect, useState
+} from "react";
+
+import axios from 'axios';
+
+function TampilData() {
+  const url = 'http://localhost/rest-api/';
+
+  const [Pengurus,setPengurus] = useState([]);
+  const [Id,setId] = useState("");
+  const [Nama,setNama] = useState("");
+  const [Alamat,setAlamat] = useState("");
+  const [Gender,setGender] = useState("L");
+  const [Gaji,setGaji] = useState("");
+
+  const clearData = () => {
+    setId("");
+    setNama("");
+    setAlamat("");
+    setGender("L");
+    setGaji("");
+  }
+
+  const viewData = () => {
+    axios
+      .get(url+'tampil_data.php')
+      .then(response => {
+        setPengurus(response.data.pengurus);
+    });
+  }
+
+  const addData = () => {
+    const formData = new URLSearchParams();
+    formData.append('id',Id);
+    formData.append('nama',Nama);
+    formData.append('alamat',Alamat);
+    formData.append('gender',Gender);
+    formData.append('gaji',Gaji);
+    axios
+      .post(url+'tambah_data.php', formData)
+      .then(response => {
+        alert(response.data.pesan);
+        viewData();
+        clearData();
+    });
+
+  }
+
+  //untuk menampilkan data dalam form modal edit
+  const editData = (data) => {
+    setId(data.id);
+    setNama(data.nama);
+    setAlamat(data.alamat);
+    setGender(data.gender);
+    setGaji(data.gaji);
+  }
+
+  //untuk mengubah data dalam rest server
+  const updateData = () => {
+    const formData = new URLSearchParams();
+    formData.append('id',Id);
+    formData.append('nama',Nama);
+    formData.append('alamat',Alamat);
+    formData.append('gender',Gender);
+    formData.append('gaji',Gaji);
+    axios
+      .post(url+'ubah_data.php', formData)
+      .then(response => {
+        alert(response.data.pesan);
+        viewData();
+        clearData();
+    });
+  }
+
+  useEffect(() => {
+    viewData();
+  },[]);
+
+  return (
+    <div className="TampilData">
+      <div className="row">
+        <div className="col">
+          <h2>CRUD Pengurus</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-4">
+          <button className="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
+        </div>
+        
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Alamat</th>
+              <th scope="col">Gender</th>
+              <th scope="col">Gaji</th>
+              <th scope="col">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+          { Pengurus.map((item, index) => (
+            <tr key={index}>
+              <td>{item.id}</td>
+              <td>{item.nama}</td>
+              <td>{item.alamat}</td>
+              <td>{item.gender}</td>
+              <td>{item.gaji}</td>
+              <td>
+                <button className="btn btn-small btn-warning"  data-bs-toggle="modal" data-bs-target="#editModal" onClick={(e) => editData(item)}>Edit</button> |
+                <button className="btn btn-small btn-danger">Delete</button>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </div>
+      {/*modal tambah data*/}
+       <div className="modal fade" id="tambahModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div className="modal-dialog">
+           <div className="modal-content">
+             <div className="modal-header">
+               <h5 className="modal-title" id="exampleModalLabel">Form Data</h5>
+               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div className="modal-body">
+               <form>
+                 <div className="mb-3">
+                   <label className="form-label">ID</label>
+                   <input type="text" className="form-control" onChange={(e) => setId(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Nama</label>
+                   <input type="text" className="form-control" onChange={(e) => setNama(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Alamat</label>
+                   <textarea className="form-control" rows="3" onChange={(e) => setAlamat(e.target.value)}></textarea>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gender</label>
+                   <select className="form-control" onChange={(e) => setGender(e.target.value)}>
+                     <option value="L">Laki-laki</option>
+                     <option value="P">Perempuan</option>
+                   </select>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gaji</label>
+                   <input type="text" className="form-control" onChange={(e) => setGaji(e.target.value)} />
+                 </div>
+               </form>
+             </div>
+             <div className="modal-footer">
+               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={clearData}>Close</button>          
+               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={addData}>Save</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       {/*modal tambah data*/}
+
+       {/*modal edit data*/}
+       <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div className="modal-dialog">
+           <div className="modal-content">
+             <div className="modal-header">
+               <h5 className="modal-title" id="exampleModalLabel">Edit Data</h5>
+               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div className="modal-body">
+               <form>
+                 <div className="mb-3">
+                   <label className="form-label">ID</label>
+                   <input type="text" className="form-control" readonly="readonly" value={Id} onChange={(e) => setId(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Nama</label>
+                   <input type="text" className="form-control" value={Nama} onChange={(e) => setNama(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Alamat</label>
+                   <textarea className="form-control" rows="3" value={Alamat} onChange={(e) => setAlamat(e.target.value)}></textarea>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gender</label>
+                   <select className="form-control" value={Gender} onChange={(e) => setGender(e.target.value)}>
+                     <option value="L">Laki-laki</option>
+                     <option value="P">Perempuan</option>
+                   </select>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gaji</label>
+                   <input type="text" className="form-control" value={Gaji} onChange={(e) => setGaji(e.target.value)} />
+                 </div>
+               </form>
+             </div>
+             <div className="modal-footer">
+               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>          
+               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={updateData}>Update</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       {/*modal edit data*/}
+    </div>
+
+  );
+}
+
+export default TampilData;
+```
+
+Kita tambahkan HTML untuk modal edit data, tepat dibawahnya modal Tambah data. Kemudian tambahkan fungsi `editData(data)` untuk menampilkan data yang akan diedit dalam form edit. Dimana fungsi ini akan mengambil parameter saat tombol Edit diklik `<button className="btn btn-small btn-warning"  data-bs-toggle="modal" data-bs-target="#editModal" onClick={(e) => editData(item)}>Edit</button>`. 
+
+Selanjutnya masing-masing data akan disimpan dalam state dan ditampilkan ke masing-masing elemen form dengan code `value={}`. Untuk fungsi `updateData()` digunakan untuk mengirim data pada rest server dengan bantuan library axios metode POST.
+
+Jika proses update berhasil maka akan memunculkan `alert(response.data.pesan)` dari rest server dan otomatis data table akan direload ulang dengan memanggil fungsi `viewData()`.
+
+Coba jalankan aplikasi anda maka akan muncul seperti dibawah ini
+
+![edit data](https://i.ibb.co/VW01hmy/Selection-006.jpg)
+
+Cobalah klik edit salah satu dan lakukan perubahan, kemudian amatilah hasilnya.
+
+## Aplikasi CRUD Hapus Data
+---
+
+Untuk membuat operasi hapus data kita tambahkan code pada **TampilData.js**
+
+```javascript
+import {
+  useEffect, useState
+} from "react";
+
+import axios from 'axios';
+
+function TampilData() {
+  const url = 'http://localhost/rest-api/';
+
+  const [Pengurus,setPengurus] = useState([]);
+  const [Id,setId] = useState("");
+  const [Nama,setNama] = useState("");
+  const [Alamat,setAlamat] = useState("");
+  const [Gender,setGender] = useState("L");
+  const [Gaji,setGaji] = useState("");
+
+  const clearData = () => {
+    setId("");
+    setNama("");
+    setAlamat("");
+    setGender("L");
+    setGaji("");
+  }
+
+  const viewData = () => {
+    axios
+      .get(url+'tampil_data.php')
+      .then(response => {
+        setPengurus(response.data.pengurus);
+    });
+  }
+
+  const addData = () => {
+    const formData = new URLSearchParams();
+    formData.append('id',Id);
+    formData.append('nama',Nama);
+    formData.append('alamat',Alamat);
+    formData.append('gender',Gender);
+    formData.append('gaji',Gaji);
+    axios
+      .post(url+'tambah_data.php', formData)
+      .then(response => {
+        alert(response.data.pesan);
+        viewData();
+        clearData();
+    });
+
+  }
+
+  const editData = (data) => {
+    setId(data.id);
+    setNama(data.nama);
+    setAlamat(data.alamat);
+    setGender(data.gender);
+    setGaji(data.gaji);
+  }
+
+  const updateData = () => {
+    const formData = new URLSearchParams();
+    formData.append('id',Id);
+    formData.append('nama',Nama);
+    formData.append('alamat',Alamat);
+    formData.append('gender',Gender);
+    formData.append('gaji',Gaji);
+    axios
+      .post(url+'ubah_data.php', formData)
+      .then(response => {
+        alert(response.data.pesan);
+        viewData();
+        clearData();
+    });
+  }
+
+  // fungsi untuk hapus data
+  const deleteData = (data) => {
+    axios
+      .get(url+'hapus_data.php?id='+data)
+      .then(response => {
+        alert(response.data.pesan);
+        viewData();
+    });   
+  }
+
+  useEffect(() => {
+    viewData();
+  },[]);
+
+  return (
+    <div className="TampilData">
+      <div className="row">
+        <div className="col">
+          <h2>CRUD Pengurus</h2>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-4">
+          <button className="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah Data</button>
+        </div>
+        
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nama</th>
+              <th scope="col">Alamat</th>
+              <th scope="col">Gender</th>
+              <th scope="col">Gaji</th>
+              <th scope="col">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+          { Pengurus.map((item, index) => (
+            <tr key={index}>
+              <td>{item.id}</td>
+              <td>{item.nama}</td>
+              <td>{item.alamat}</td>
+              <td>{item.gender}</td>
+              <td>{item.gaji}</td>
+              <td>
+                <button className="btn btn-small btn-warning"  data-bs-toggle="modal" data-bs-target="#editModal" onClick={(e) => editData(item)}>Edit</button> |
+                <button className="btn btn-small btn-danger" onClick={(e) => deleteData(item.id)}>Delete</button>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </div>
+      {/*modal tambah data*/}
+       <div className="modal fade" id="tambahModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div className="modal-dialog">
+           <div className="modal-content">
+             <div className="modal-header">
+               <h5 className="modal-title" id="exampleModalLabel">Form Data</h5>
+               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div className="modal-body">
+               <form>
+                 <div className="mb-3">
+                   <label className="form-label">ID</label>
+                   <input type="text" className="form-control" onChange={(e) => setId(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Nama</label>
+                   <input type="text" className="form-control" onChange={(e) => setNama(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Alamat</label>
+                   <textarea className="form-control" rows="3" onChange={(e) => setAlamat(e.target.value)}></textarea>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gender</label>
+                   <select className="form-control" onChange={(e) => setGender(e.target.value)}>
+                     <option value="L">Laki-laki</option>
+                     <option value="P">Perempuan</option>
+                   </select>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gaji</label>
+                   <input type="text" className="form-control" onChange={(e) => setGaji(e.target.value)} />
+                 </div>
+               </form>
+             </div>
+             <div className="modal-footer">
+               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={clearData}>Close</button>          
+               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={addData}>Save</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       {/*modal tambah data*/}
+
+       {/*modal edit data*/}
+       <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div className="modal-dialog">
+           <div className="modal-content">
+             <div className="modal-header">
+               <h5 className="modal-title" id="exampleModalLabel">Edit Data</h5>
+               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+             </div>
+             <div className="modal-body">
+               <form>
+                 <div className="mb-3">
+                   <label className="form-label">ID</label>
+                   <input type="text" className="form-control" readonly="readonly" value={Id} onChange={(e) => setId(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Nama</label>
+                   <input type="text" className="form-control" value={Nama} onChange={(e) => setNama(e.target.value)} />
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Alamat</label>
+                   <textarea className="form-control" rows="3" value={Alamat} onChange={(e) => setAlamat(e.target.value)}></textarea>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gender</label>
+                   <select className="form-control" value={Gender} onChange={(e) => setGender(e.target.value)}>
+                     <option value="L">Laki-laki</option>
+                     <option value="P">Perempuan</option>
+                   </select>
+                 </div>
+                 <div className="mb-3">
+                   <label className="form-label">Gaji</label>
+                   <input type="text" className="form-control" value={Gaji} onChange={(e) => setGaji(e.target.value)} />
+                 </div>
+               </form>
+             </div>
+             <div className="modal-footer">
+               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>          
+               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={updateData}>Update</button>
+             </div>
+           </div>
+         </div>
+       </div>
+       {/*modal edit data*/}
+    </div>
+
+  );
+}
+
+export default TampilData;
+```
+
+sama halnya dengan operasi edit data. Kode `<button className="btn btn-small btn-danger" onClick={(e) => deleteData(item.id)}>Delete</button>` akan memanggil fungsi `deleteData()` dimana akan menerima parameter data id yang akan dihapus. Kemudian dengan bantuan axios akan dikirimkan ke rest server dengan metode GET untuk di eksekusi.
+
+Sampai disini kita sudah bisa membuat aplikasi rest client full CRUD dengan menggunakan ReactJS dengan Rest Server PHP dan MySQL.
+
+
 
 ## Referensi
 ---
@@ -1206,3 +2056,4 @@ Coba cek laman lain dan amatilah hasilnya.
 - [https://afrijaldzuhri.com/belajar-routing-dalam-react/](https://afrijaldzuhri.com/belajar-routing-dalam-react/)
 - [https://blog.logrocket.com/using-bootstrap-with-react-tutorial-with-examples/](https://blog.logrocket.com/using-bootstrap-with-react-tutorial-with-examples/)
 - [https://www.digitalocean.com/community/tutorials/react-axios-react-id](https://www.digitalocean.com/community/tutorials/react-axios-react-id)
+- [https://id.reactjs.org/docs/hooks-overview.html](https://id.reactjs.org/docs/hooks-overview.html)
